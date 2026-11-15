@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KT세일즈 - KT 하이오더2 간편 견적기</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard Webfont CDN -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- html2canvas for High-Res Vertical Quote Image Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+          },
+          colors: {
+            kt: {
+              red: '#E60012',
+              darkRed: '#C4000F',
+              charcoal: '#1E232A',
+              bg: '#F4F6F9',
+              border: '#E2E8F0'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* 100% Pretendard Font Enforcement */
+    *, *::before, *::after,
+    html, body, input, select, button, textarea, table, th, td, span, div, p, h1, h2, h3, h4, li, ul {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif !important;
+      letter-spacing: -0.02em;
+    }
+
+    body {
+      background-color: #E8EDF4;
+      color: #1E232A;
+      -webkit-tap-highlight-color: transparent;
+      word-break: keep-all;
+      overflow-x: hidden;
+    }
+
+    /* Clean scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+
+    /* STRICTLY ISOLATED OFF-SCREEN CAPTURE CONTAINER */
+    #capture-sandbox {
+      position: fixed;
+      left: -99999px;
+      top: 0;
+      width: 720px;
+      pointer-events: none;
+      z-index: -9999;
+      background-color: #FFFFFF;
+    }
+
+    #capture-template {
+      width: 720px;
+      background-color: #FFFFFF;
+      color: #1E232A;
+      padding: 40px 38px 44px 38px;
+      box-sizing: border-box;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center">
+
+  <!-- Main Mobile App Shell (Max 480px) -->
+  <div class="w-full max-w-[480px] bg-kt-bg min-h-screen shadow-xl flex flex-col relative">
+
+    <!-- ===================================================================== -->
+    <!-- TOP HEADER: KT세일즈 Vector Logo + 2-Tab Navigation (견적 작성 / 견적 보관함) -->
+    <!-- ===================================================================== -->
+    <header class="sticky top-0 z-30 bg-white border-b border-kt-border shadow-2xs">
+      <div class="px-4 py-3 flex items-center justify-between">
+        <!-- Pure Solid Vector KT Ribbon Logo -->
+        <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('form')">
+          <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="KT 공식 로고">
+            <path d="M22 24C22 20.7 24.7 18 28 18H33C36.3 18 39 20.7 39 24V96C39 99.3 36.3 102 33 102H28C24.7 102 22 99.3 22 96V24Z" fill="#222222"/>
+            <path d="M36 62L55 46L67 54L48 70L69 97C70.6 99 69.2 102 66.6 102H54.5C52.6 102 50.8 101.1 49.7 99.6L36 80V62Z" fill="#222222"/>
+            <path d="M71 24C71 20.7 73.7 18 77 18H82C85.3 18 88 20.7 88 24V79C88 85.5 91.5 88.5 98 88.5H101C103.8 88.5 106 90.7 106 93.5V97.5C106 100.2 103.9 102 101.2 102H94.5C79.5 102 71 93.5 71 78.5V24Z" fill="#222222"/>
+            <path d="M71 54H88V61H71V54Z" fill="#0F0F0F"/>
+            <path d="M36.5 62.5C43.5 47.5 53.5 41.5 69.5 41.5H93.5C99.5 41.5 104 39.2 106.5 36.2V48.5C106.5 53.8 102.2 57.5 95.5 57.5H65.5C51.5 57.5 43.5 59.5 36.5 62.5Z" fill="#E60012"/>
+            <path d="M36.5 62.5C43.5 47.5 53.5 41.5 69.5 41.5H93.5C99.5 41.5 104 39.2 106.5 36.2V39C103.5 41.7 99 43.7 93 43.7H69.5C54.2 43.7 44.5 49.2 36.5 62.5Z" fill="#FF6B6B"/>
+          </svg>
+          <div class="flex flex-col leading-none">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[19px] font-black text-kt-charcoal tracking-tight">KT세일즈</span>
+              <span class="text-[10px] font-bold text-kt-red bg-red-50 px-1.5 py-0.5 rounded border border-red-200">하이오더 공식파트너</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simple 2-Tab Navigation -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+          <button type="button" id="tab-btn-form" onclick="switchView('form')"
+            class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-kt-charcoal shadow-2xs transition">
+            견적 작성
+          </button>
+          <button type="button" id="tab-btn-history" onclick="switchView('history')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-kt-charcoal transition flex items-center gap-1">
+            <span>견적 보관함</span>
+            <span id="history-badge" class="bg-kt-red text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: 가입 조건 입력 폼 화면                                        -->
+    <!-- ===================================================================== -->
+    <div id="view-form" class="flex-1 flex flex-col pb-28">
+      <main class="p-4 space-y-4">
+
+        <!-- STEP 1: 매장 및 담당자 정보 -->
+        <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-kt-red text-white text-xs font-bold flex items-center justify-center">1</span>
+              <h2 class="font-bold text-[15px] text-kt-charcoal">매장 및 담당자 정보</h2>
+            </div>
+            <span class="text-[11px] text-slate-400">견적서 상단 표기</span>
+          </div>
+
+          <div class="space-y-3">
+            <!-- 결제 방식 선택 (후불형 / 선불형 NICE VAN / 선불형 기타 VAN) -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block text-xs font-bold text-slate-600">결제 방식 선택</label>
+                <span class="text-[10px] text-slate-400">메뉴판 기본단가(VAT별도) 연동</span>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" id="btn-type-postpaid" onclick="setPaymentType('후불형')"
+                  class="py-2.5 px-2 rounded-xl text-xs font-bold border-2 border-kt-red bg-red-50/60 text-kt-red transition flex flex-col items-center justify-center gap-0.5 text-center">
+                  <span>후불형</span>
+                  <span class="text-[10px] font-bold text-kt-red opacity-90">월 20,000원</span>
+                </button>
+                <button type="button" id="btn-type-prepaid-nice" onclick="setPaymentType('선불형(NICE VAN)')"
+                  class="py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition flex flex-col items-center justify-center gap-0.5 text-center">
+                  <span class="leading-tight">선불형<br/><span class="text-[10px]">(NICE VAN)</span></span>
+                  <span class="text-[10px] font-semibold text-slate-500">월 23,000원</span>
+                </button>
+                <button type="button" id="btn-type-prepaid-etc" onclick="setPaymentType('선불형(기타 VAN)')"
+                  class="py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition flex flex-col items-center justify-center gap-0.5 text-center">
+                  <span class="leading-tight">선불형<br/><span class="text-[10px]">(기타 VAN)</span></span>
+                  <span class="text-[10px] font-semibold text-slate-500">월 22,000원</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 매장명 & 고객 연락처 -->
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">고객(매장)명 <span class="text-kt-red">*</span></label>
+                <input type="text" id="input-store-name" placeholder="예: 장생관" value="장생관" oninput="updateCalculation()"
+                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white transition font-bold" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">고객 연락처 (선택)</label>
+                <input type="tel" id="input-customer-phone" placeholder="010-0000-0000" oninput="formatPhone(this); updateCalculation()"
+                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white transition" />
+              </div>
+            </div>
+
+            <!-- 견적일자 -->
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">견적일자</label>
+              <input type="date" id="input-quote-date" onchange="updateCalculation()"
+                class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white transition font-semibold" />
+            </div>
+
+            <!-- 담당자 드롭다운 선택 & 연락처 자동 입력 + 담당자 관리 버튼 -->
+            <div class="pt-2.5 border-t border-dashed border-slate-200">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700">영업 담당자 <span class="text-[10px] text-kt-red font-semibold">(연락처 자동입력)</span></label>
+                <button type="button" onclick="openManagerModal()"
+                  class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 hover:text-kt-red bg-slate-100 hover:bg-red-50 px-2.5 py-1 rounded-lg transition">
+                  <i data-lucide="user-cog" class="w-3 h-3"></i>
+                  <span>담당자 관리</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div class="relative">
+                  <select id="select-manager" onchange="onManagerSelect()"
+                    class="w-full appearance-none px-3 py-2.5 pr-8 text-xs font-bold text-kt-charcoal bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white transition cursor-pointer">
+                  </select>
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                </div>
+                <div>
+                  <input type="tel" id="input-manager-phone" placeholder="담당자 연락처" oninput="formatPhone(this); updateCalculation()"
+                    class="w-full px-3 py-2.5 text-xs font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white transition" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 2: 단말기 수량 및 규격 선택 -->
+        <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-kt-red text-white text-xs font-bold flex items-center justify-center">2</span>
+              <h2 class="font-bold text-[15px] text-kt-charcoal">단말기 수량 및 규격 선택</h2>
+            </div>
+            <span class="text-[11px] text-slate-400">VAT 별도 단가 기준</span>
+          </div>
+
+          <div class="space-y-3.5">
+            <!-- 1. 메뉴판 태블릿 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-start justify-between mb-2.5">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-bold text-sm text-kt-charcoal">메뉴판 태블릿</span>
+                    <span id="menu-type-badge" class="text-[10px] font-bold bg-red-100 text-kt-red px-1.5 py-0.5 rounded">후불형</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">기본 단가 <strong id="menu-unit-label" class="text-slate-800">월 20,000원</strong> / 대</p>
+                </div>
+                <!-- Stepper -->
+                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-2xs">
+                  <button type="button" onclick="adjustQty('menu', -1)" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 active:bg-slate-200 font-bold text-lg">−</button>
+                  <input type="number" id="qty-menu" value="8" min="0" max="50" onchange="setQty('menu', this.value)"
+                    class="w-11 text-center font-extrabold text-sm text-kt-charcoal focus:outline-none" />
+                  <button type="button" onclick="adjustQty('menu', 1)" class="w-9 h-9 flex items-center justify-center text-kt-red hover:bg-red-50 active:bg-red-100 font-bold text-lg">+</button>
+                </div>
+              </div>
+              <!-- Quick Preset Buttons -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[11px] text-slate-400 mr-1">빠른선택:</span>
+                <button type="button" onclick="setQty('menu', 5)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">5대</button>
+                <button type="button" onclick="setQty('menu', 8)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">8대</button>
+                <button type="button" onclick="setQty('menu', 10)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">10대</button>
+                <button type="button" onclick="setQty('menu', 15)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">15대</button>
+                <button type="button" onclick="setQty('menu', 20)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">20대</button>
+              </div>
+            </div>
+
+            <!-- 2. 알림판 태블릿 (10인치 20,000원 vs 15인치 22,000원 선택) -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-bold text-sm text-kt-charcoal">알림판 태블릿</span>
+                    <span id="notice-size-badge" class="text-[10px] font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">10인치 선택</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">기본 단가 <strong id="notice-unit-label" class="text-slate-800">월 20,000원</strong> / 대</p>
+                </div>
+                <!-- Stepper -->
+                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-2xs">
+                  <button type="button" onclick="adjustQty('notice', -1)" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 active:bg-slate-200 font-bold text-lg">−</button>
+                  <input type="number" id="qty-notice" value="1" min="0" max="10" onchange="setQty('notice', this.value)"
+                    class="w-11 text-center font-extrabold text-sm text-kt-charcoal focus:outline-none" />
+                  <button type="button" onclick="adjustQty('notice', 1)" class="w-9 h-9 flex items-center justify-center text-kt-red hover:bg-red-50 active:bg-red-100 font-bold text-lg">+</button>
+                </div>
+              </div>
+
+              <!-- 10인치 vs 15인치 Segmented Selector -->
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="btn-notice-10" onclick="setNoticeSize(10)"
+                  class="py-2 px-3 rounded-xl text-xs font-bold border-2 border-kt-red bg-white text-kt-red transition flex items-center justify-between">
+                  <span>10인치 (기본)</span>
+                  <span>20,000원</span>
+                </button>
+                <button type="button" id="btn-notice-15" onclick="setNoticeSize(15)"
+                  class="py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+                  <span>15인치 (대형)</span>
+                  <span>22,000원</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3: 할인 프로모션 및 패키지 선택 -->
+        <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-kt-red text-white text-xs font-bold flex items-center justify-center">3</span>
+              <h2 class="font-bold text-[15px] text-kt-charcoal">할인 프로그램 및 제휴카드 선택</h2>
+            </div>
+            <span class="text-[11px] text-emerald-600 font-bold">중복 할인 적용</span>
+          </div>
+
+          <!-- A. 대기화면 광고 할인 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
+            <div class="pr-2">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-kt-charcoal">대기화면 광고 송출 할인</span>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">기본추천</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">메뉴판 대당 <strong class="text-kt-red">-556원</strong>/월 할인 (공급가 기준)</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="chk-ad-discount" checked onchange="updateCalculation()" class="sr-only peer" />
+              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kt-red"></div>
+            </label>
+          </div>
+
+          <!-- B. 으랏차차패키지 할인 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 flex items-center justify-between bg-amber-50/30">
+            <div class="pr-2">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-kt-charcoal">으랏차차패키지 할인</span>
+                <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">패키지 결합</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5">매월 <strong class="text-kt-red">-5,500원</strong> 정액 할인 (공급가 -5,000원 / VAT -500원)</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="chk-euratchacha" onchange="updateCalculation()" class="sr-only peer" />
+              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kt-red"></div>
+            </label>
+          </div>
+
+          <!-- C. 제휴카드 할인 -->
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-blue-50/30 space-y-2.5">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-sm text-kt-charcoal">제휴카드 청구할인 선택</span>
+                <span class="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">체감가 안내</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">선택 시 견적서 하단에 제휴카드 체감 월 납부액 박스가 표시됩니다.</p>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5" id="card-chips-grid">
+              <button type="button" data-card="0" onclick="selectCardAmount(0)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border-2 border-blue-600 bg-blue-600 text-white transition">없음</button>
+              <button type="button" data-card="17000" onclick="selectCardAmount(17000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-1.7만원</button>
+              <button type="button" data-card="20000" onclick="selectCardAmount(20000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-2.0만원</button>
+              <button type="button" data-card="25000" onclick="selectCardAmount(25000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-2.5만원</button>
+              <button type="button" data-card="30000" onclick="selectCardAmount(30000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-3.0만원</button>
+              <button type="button" data-card="35000" onclick="selectCardAmount(35000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-3.5만원</button>
+              <button type="button" data-card="40000" onclick="selectCardAmount(40000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-4.0만원</button>
+              <button type="button" data-card="45000" onclick="selectCardAmount(45000)" class="card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition">-4.5만원</button>
+            </div>
+          </div>
+
+          <!-- D. 프랜차이즈 / 추가 할인 선택 -->
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">프랜차이즈 / 추가 할인 (메뉴판 대당)</label>
+            <div class="grid grid-cols-2 gap-2" id="extra-discount-group">
+              <button type="button" data-val="0" onclick="selectExtraDiscount(0)"
+                class="extra-disc-btn py-2 px-3 rounded-xl text-xs font-bold border-2 border-kt-red bg-red-50/60 text-kt-red transition text-left">
+                <div>없음 (기본)</div>
+                <div class="text-[10px] font-normal opacity-80">대당 0원</div>
+              </button>
+              <button type="button" data-val="1000" onclick="selectExtraDiscount(1000)"
+                class="extra-disc-btn py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 transition text-left">
+                <div>프랜차이즈 제휴 A</div>
+                <div class="text-[10px] text-kt-red font-semibold">대당 -1,000원/월</div>
+              </button>
+              <button type="button" data-val="2000" onclick="selectExtraDiscount(2000)"
+                class="extra-disc-btn py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 transition text-left">
+                <div>프랜차이즈 제휴 B</div>
+                <div class="text-[10px] text-kt-red font-semibold">대당 -2,000원/월</div>
+              </button>
+              <button type="button" data-val="custom" onclick="selectExtraDiscount('custom')"
+                class="extra-disc-btn py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 transition text-left">
+                <div>직접 입력</div>
+                <div class="text-[10px] text-slate-400">대당 할인액 지정</div>
+              </button>
+            </div>
+            <!-- Custom Discount Input -->
+            <div id="custom-discount-box" class="hidden mt-2 flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <span class="text-xs font-semibold text-slate-600 whitespace-nowrap">대당 월 할인액:</span>
+              <input type="number" id="input-custom-discount" placeholder="예: 1500" min="0" step="100" oninput="updateCalculation()"
+                class="w-full px-2.5 py-1.5 text-sm bg-white border border-slate-300 rounded-lg text-right font-bold focus:outline-none focus:border-kt-red" />
+              <span class="text-xs font-semibold text-slate-600">원</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 4: 특별 가입 혜택 및 무상 지원 내역 -->
+        <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-kt-charcoal text-white text-xs font-bold flex items-center justify-center">4</span>
+              <h2 class="font-bold text-[15px] text-kt-charcoal">무료 지원 · 가입 혜택 설정</h2>
+            </div>
+            <span class="text-[11px] text-kt-red font-bold">견적서 하단 표기</span>
+          </div>
+
+          <div id="benefits-list" class="space-y-2">
+          </div>
+
+          <!-- Add Custom Benefit Input -->
+          <div class="mt-3 pt-3 border-t border-slate-100 flex gap-2">
+            <input type="text" id="input-new-benefit" placeholder="추가 사은품/혜택 직접 입력 (예: 보조배터리 2개 증정)"
+              onkeydown="if(event.key==='Enter'){ addCustomBenefit(); }"
+              class="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-kt-red focus:bg-white" />
+            <button type="button" onclick="addCustomBenefit()"
+              class="px-3.5 py-2 bg-kt-charcoal text-white text-xs font-bold rounded-xl hover:bg-slate-800 active:scale-95 transition whitespace-nowrap">
+              + 추가
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bottom Sticky Live Summary Bar + [최종 견적서 생성하기] CTA -->
+      <div class="fixed bottom-0 w-full max-w-[480px] z-30 bg-white border-t border-slate-200 px-4 py-3 shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <span class="text-[11px] font-bold text-slate-500 block" id="footer-summary-spec">후불형 · 메뉴판 8대 · 알림판(10인치) 1대</span>
+            <span class="text-[10px] font-bold text-emerald-600" id="footer-discount-badge">총 월 4,893원 할인 적용</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 block">최종 월 납부 합계 (VAT포함)</span>
+            <span class="text-lg font-black text-kt-red tracking-tight"><span id="footer-total-price">193,107</span>원</span>
+          </div>
+        </div>
+        <button type="button" onclick="generateQuoteAndShowResult()"
+          class="w-full py-3.5 bg-kt-red hover:bg-kt-darkRed active:scale-[0.98] text-white font-extrabold text-[15px] rounded-2xl shadow-md shadow-red-600/25 transition flex items-center justify-center gap-2">
+          <i data-lucide="file-check-2" class="w-5 h-5"></i>
+          <span>최종 견적서 생성하기</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: 생성된 견적서 확인 & 저장/공유 화면                           -->
+    <!-- ===================================================================== -->
+    <div id="view-result" class="hidden flex-1 flex flex-col bg-slate-100 pb-8">
+      <!-- Sub Top Bar: [← 조건 수정하기] -->
+      <div class="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <button type="button" onclick="switchView('form')"
+          class="inline-flex items-center gap-1.5 text-xs font-extrabold text-kt-charcoal bg-slate-100 hover:bg-slate-200 active:scale-95 px-3 py-2 rounded-xl transition">
+          <i data-lucide="arrow-left" class="w-4 h-4 text-kt-red"></i>
+          <span>조건 수정하기</span>
+        </button>
+        <span class="text-xs font-extrabold text-kt-red">세로형 견적서 생성 완료</span>
+      </div>
+
+      <!-- Generated Image Preview Container -->
+      <div class="p-4 flex-1 flex flex-col items-center">
+        <div id="quote-loading" class="w-full bg-white rounded-2xl py-20 flex flex-col items-center justify-center gap-3 text-slate-500 border border-slate-200">
+          <div class="w-9 h-9 border-4 border-kt-red border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-xs font-bold text-kt-charcoal">고화질 세로형 견적서 이미지를 생성 중입니다...</span>
+        </div>
+
+        <img id="preview-img" alt="KT세일즈 하이오더2 공식 견적서" class="hidden w-full h-auto rounded-xl shadow-md border border-slate-200 bg-white" />
+
+        <!-- 4 Dedicated Action Buttons -->
+        <div id="result-action-panel" class="hidden w-full mt-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+          <div class="text-xs font-extrabold text-kt-charcoal mb-1 flex items-center justify-between">
+            <span>견적서 저장 및 고객 발송</span>
+            <span class="text-[11px] font-medium text-slate-400">원하시는 기능을 선택하세요</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- 1) 이미지 저장 -->
+            <button type="button" onclick="downloadQuoteImage()"
+              class="py-3.5 px-3 bg-kt-charcoal hover:bg-slate-800 active:scale-95 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-2xs">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>이미지 저장</span>
+            </button>
+
+            <!-- 2) 드라이브 저장 -->
+            <button type="button" id="btn-save-drive" onclick="saveQuoteToDrive()"
+              class="py-3.5 px-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-2xs">
+              <i data-lucide="hard-drive-upload" class="w-4 h-4"></i>
+              <span id="btn-save-drive-text">드라이브 저장</span>
+            </button>
+
+            <!-- 3) 카톡 공유 -->
+            <button type="button" onclick="shareToKakao()"
+              class="py-3.5 px-3 bg-[#FEE500] hover:bg-[#F5DC00] active:scale-95 text-[#191919] font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-2xs">
+              <i data-lucide="message-circle" class="w-4 h-4 fill-[#191919]"></i>
+              <span>카톡 공유</span>
+            </button>
+
+            <!-- 4) 메시지 공유 -->
+            <button type="button" onclick="shareToSMS()"
+              class="py-3.5 px-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-2xs">
+              <i data-lucide="message-square-text" class="w-4 h-4"></i>
+              <span>메시지 공유</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: 견적 보관함 & 구글 드라이브 연동 화면                         -->
+    <!-- ===================================================================== -->
+    <div id="view-history" class="hidden flex-1 flex flex-col bg-kt-bg p-4 space-y-3 pb-10">
+      <!-- Google Drive Sync & CSV Export Panel -->
+      <div class="bg-white rounded-2xl p-4 border border-kt-border shadow-2xs space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 flex-wrap">
+            <i data-lucide="hard-drive" class="w-4 h-4 text-blue-600"></i>
+            <span class="text-sm font-extrabold text-kt-charcoal">구글 드라이브 / 시트 백업 연동</span>
+            <span id="drive-status-badge" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">구글 드라이브 실시간 연동됨</span>
+          </div>
+          <button type="button" onclick="toggleAppsScriptConfig()" class="text-[11px] text-kt-red font-bold underline shrink-0">
+            웹앱 URL 설정
+          </button>
+        </div>
+
+        <div id="apps-script-box" class="hidden bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+          <p class="text-[11px] text-slate-600 leading-relaxed">
+            공용 구글 드라이브/시트 Apps Script 웹앱 URL이 기본 적용되어 있습니다. 필요 시 변경 후 저장할 수 있습니다.
+          </p>
+          <div class="flex gap-1.5">
+            <input type="url" id="input-webhook-url" placeholder="https://script.google.com/macros/s/.../exec"
+              class="flex-1 px-2.5 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-kt-red" />
+            <button type="button" onclick="saveWebhookUrl()" class="px-3.5 py-2 bg-kt-charcoal text-white text-xs font-bold rounded-lg">저장</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="exportAllHistoryCSV()"
+            class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+            <span>전체 내역 CSV 받기</span>
+          </button>
+          <button type="button" onclick="openGoogleDriveUpload()"
+            class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5">
+            <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>구글 드라이브 열기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Saved Quotes List -->
+      <div id="history-list-container" class="space-y-2.5">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- OFF-SCREEN DEDICATED 720PX CAPTURE TEMPLATE (#capture-template)       -->
+  <!-- ===================================================================== -->
+  <div id="capture-sandbox" aria-hidden="true">
+    <div id="capture-template">
+      <!-- Top Accent Bar -->
+      <div style="height: 8px; background-color: #E60012; border-radius: 4px; margin-bottom: 26px;"></div>
+
+      <!-- Header -->
+      <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #1E232A; padding-bottom: 22px; margin-bottom: 24px;">
+        <tr>
+          <td style="vertical-align: top; padding-bottom: 20px;">
+            <table style="border-collapse: collapse; margin-bottom: 12px;">
+              <tr>
+                <td style="vertical-align: middle; padding-right: 12px;">
+                  <svg width="42" height="42" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 24C22 20.7 24.7 18 28 18H33C36.3 18 39 20.7 39 24V96C39 99.3 36.3 102 33 102H28C24.7 102 22 99.3 22 96V24Z" fill="#222222"/>
+                    <path d="M36 62L55 46L67 54L48 70L69 97C70.6 99 69.2 102 66.6 102H54.5C52.6 102 50.8 101.1 49.7 99.6L36 80V62Z" fill="#222222"/>
+                    <path d="M71 24C71 20.7 73.7 18 77 18H82C85.3 18 88 20.7 88 24V79C88 85.5 91.5 88.5 98 88.5H101C103.8 88.5 106 90.7 106 93.5V97.5C106 100.2 103.9 102 101.2 102H94.5C79.5 102 71 93.5 71 78.5V24Z" fill="#222222"/>
+                    <path d="M71 54H88V61H71V54Z" fill="#0F0F0F"/>
+                    <path d="M36.5 62.5C43.5 47.5 53.5 41.5 69.5 41.5H93.5C99.5 41.5 104 39.2 106.5 36.2V48.5C106.5 53.8 102.2 57.5 95.5 57.5H65.5C51.5 57.5 43.5 59.5 36.5 62.5Z" fill="#E60012"/>
+                    <path d="M36.5 62.5C43.5 47.5 53.5 41.5 69.5 41.5H93.5C99.5 41.5 104 39.2 106.5 36.2V39C103.5 41.7 99 43.7 93 43.7H69.5C54.2 43.7 44.5 49.2 36.5 62.5Z" fill="#FF6B6B"/>
+                  </svg>
+                </td>
+                <td style="vertical-align: middle;">
+                  <div>
+                    <span style="font-size: 24px; font-weight: 900; color: #1E232A; vertical-align: middle;">KT세일즈</span>
+                    <span style="display: inline-block; margin-left: 8px; padding: 3px 9px; background-color: #FEF2F2; color: #E60012; border: 1px solid #FECACA; border-radius: 6px; font-size: 12px; font-weight: 800; vertical-align: middle;">공식 인증 견적서</span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 700; color: #64748B; margin-top: 3px;">KT 하이오더 공식파트너</div>
+                </td>
+              </tr>
+            </table>
+
+            <div style="font-size: 27px; font-weight: 900; color: #1E232A; line-height: 1.25;">
+              KT 하이오더2 <span id="q-payment-type" style="color: #E60012;">(후불형)</span> 견적서
+            </div>
+            <div style="font-size: 13px; color: #64748B; margin-top: 5px; font-weight: 600;">스마트 테이블오더 솔루션 · 3년 약정 기준</div>
+          </td>
+
+          <td style="vertical-align: top; text-align: right; padding-bottom: 20px; width: 205px;">
+            <div style="background-color: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 14px; padding: 14px 16px; text-align: right;">
+              <div style="font-size: 12px; color: #64748B; font-weight: 600;">견적일자</div>
+              <div id="q-date" style="font-size: 18px; font-weight: 900; color: #1E232A; margin-top: 2px;">2026-11-16</div>
+              <div style="font-size: 11px; color: #E60012; font-weight: 700; margin-top: 6px;">유효기간: 견적일 당월 말일까지</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Customer & Supplier Info Grid -->
+      <table style="width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 24px;">
+        <tr>
+          <td style="width: 49%; vertical-align: top; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px;">
+            <div style="font-size: 13px; font-weight: 800; color: #E60012; margin-bottom: 10px;">
+              ● 수신 (고객 정보)
+            </div>
+            <table style="width: 100%; font-size: 13.5px; border-collapse: collapse;">
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; width: 78px; font-weight: 600;">고객(매장)</td>
+                <td id="q-store-name" style="font-weight: 900; color: #1E232A; padding: 4px 0; font-size: 16px;">장생관 귀하</td>
+              </tr>
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; font-weight: 600;">고객연락처</td>
+                <td id="q-customer-phone" style="font-weight: 600; color: #334155; padding: 4px 0;">미기재</td>
+              </tr>
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; font-weight: 600;">담당자</td>
+                <td id="q-manager-info" style="font-weight: 700; color: #1E232A; padding: 4px 0;">임훈 (010-5566-3327)</td>
+              </tr>
+            </table>
+          </td>
+
+          <td style="width: 2%;"></td>
+
+          <td style="width: 49%; vertical-align: top; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px;">
+            <div style="font-size: 13px; font-weight: 800; color: #1E232A; margin-bottom: 10px;">
+              ● 공급자 정보
+            </div>
+            <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; width: 78px; font-weight: 600;">상호</td>
+                <td style="font-weight: 800; color: #1E232A; padding: 4px 0;">㈜케이티</td>
+              </tr>
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; font-weight: 600;">사업자번호</td>
+                <td style="font-weight: 700; color: #334155; padding: 4px 0;">102-81-42945</td>
+              </tr>
+              <tr>
+                <td style="color: #64748B; padding: 4px 0; vertical-align: top; font-weight: 600;">주소</td>
+                <td style="font-weight: 600; color: #334155; padding: 4px 0; line-height: 1.4;">경기도 성남시 불정로90</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Itemized Breakdown Table -->
+      <div style="margin-bottom: 24px;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
+          <tr>
+            <td style="font-size: 15px; font-weight: 900; color: #1E232A;">■ 상품 구성 및 월 이용료 내역</td>
+            <td style="text-align: right; font-size: 12px; color: #64748B; font-weight: 600;">(단위: 원 / VAT 별도)</td>
+          </tr>
+        </table>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; border-top: 2px solid #1E232A;">
+          <thead>
+            <tr style="background-color: #F1F5F9; color: #334155; border-bottom: 1px solid #CBD5E1;">
+              <th style="padding: 11px 12px; text-align: left; font-weight: 800;">품목명</th>
+              <th style="padding: 11px 8px; text-align: right; font-weight: 800;">기본단가</th>
+              <th style="padding: 11px 8px; text-align: right; font-weight: 800;">할인액</th>
+              <th style="padding: 11px 8px; text-align: right; font-weight: 800;">적용단가</th>
+              <th style="padding: 11px 8px; text-align: center; font-weight: 800;">수량</th>
+              <th style="padding: 11px 12px; text-align: right; font-weight: 800;">월 공급가액</th>
+            </tr>
+          </thead>
+          <tbody id="q-items-tbody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Total Price Highlight Box -->
+      <div style="background-color: #1E232A; color: #FFFFFF; border-radius: 18px; padding: 22px 24px; margin-bottom: 22px;">
+        <table style="width: 100%; border-collapse: collapse; border-bottom: 1px solid #334155; margin-bottom: 16px;">
+          <tr>
+            <td style="width: 33.3%; padding-bottom: 14px;">
+              <div style="color: #94A3B8; font-size: 12px; margin-bottom: 4px; font-weight: 600;">월 공급가액</div>
+              <div id="q-supply-total" style="font-size: 18px; font-weight: 800; color: #FFFFFF;">175,552원</div>
+            </td>
+            <td style="width: 33.3%; padding-bottom: 14px;">
+              <div style="color: #94A3B8; font-size: 12px; margin-bottom: 4px; font-weight: 600;">총 월 할인혜택 (VAT포함)</div>
+              <div id="q-discount-total" style="font-size: 18px; font-weight: 800; color: #34D399;">-4,893원</div>
+            </td>
+            <td style="width: 33.3%; padding-bottom: 14px;">
+              <div style="color: #94A3B8; font-size: 12px; margin-bottom: 4px; font-weight: 600;">부가가치세 (10%)</div>
+              <div id="q-vat-total" style="font-size: 18px; font-weight: 800; color: #FFFFFF;">17,555원</div>
+            </td>
+          </tr>
+        </table>
+
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="vertical-align: middle;">
+              <div style="font-size: 15px; font-weight: 800; color: #F1F5F9;">최종 월 납부 합계 (VAT 포함)</div>
+              <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">※ 기본 3년 약정 기준 (3년 약정 만료 후 월 15,000원 이용)</div>
+            </td>
+            <td style="vertical-align: middle; text-align: right;">
+              <span id="q-final-total" style="font-size: 32px; font-weight: 900; color: #FF4D5A;">193,107원</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- 제휴카드 혜택 적용 시 체감 월 납부액 안내 박스 -->
+        <div id="q-card-highlight-box" style="display: none; margin-top: 16px; padding: 14px 18px; background-color: #1E3A8A; border: 1px solid #3B82F6; border-radius: 12px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="vertical-align: middle;">
+                <div>
+                  <span style="display: inline-block; background-color: #3B82F6; color: #FFFFFF; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; vertical-align: middle;">제휴카드 혜택</span>
+                  <span style="font-size: 14px; font-weight: 800; color: #DBEAFE; margin-left: 6px; vertical-align: middle;">제휴카드 청구할인 적용 시 체감 월 납부액</span>
+                </div>
+                <div id="q-card-subtext" style="font-size: 12px; color: #93C5FD; margin-top: 4px;">제휴카드 월 -17,000원 청구할인 반영 기준 (전월 실적 충족 시)</div>
+              </td>
+              <td style="vertical-align: middle; text-align: right;">
+                <span id="q-card-final-total" style="font-size: 26px; font-weight: 900; color: #93C5FD;">176,107원</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Special Benefits Box -->
+      <div style="background-color: #FFF5F5; border: 1.5px solid #FECACA; border-radius: 16px; padding: 18px 20px; margin-bottom: 22px;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+          <tr>
+            <td style="font-size: 15px; font-weight: 900; color: #E60012; vertical-align: middle;">★ 특별 가입 혜택 및 무상 지원 내역</td>
+            <td style="text-align: right; vertical-align: middle;">
+              <span style="display: inline-block; background-color: #E60012; color: #FFFFFF; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 8px;">전액 무상 지원</span>
+            </td>
+          </tr>
+        </table>
+        <table id="q-benefits-table" style="width: 100%; border-collapse: collapse; font-size: 13px; font-weight: 700; color: #1E232A;">
+        </table>
+      </div>
+
+      <!-- Mandatory Terms & Notices -->
+      <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px; font-size: 12px; color: #475569; line-height: 1.55;">
+        <div style="font-weight: 800; color: #1E232A; font-size: 13px; margin-bottom: 6px;">[약정 및 주요 안내사항]</div>
+        <div style="color: #C4000F; font-weight: 700; margin-bottom: 6px;">• 모든 상품 약정은 기본 3년이며, 실사용 1년 이내 해지/정지/미납 직권해지 시 사은품 전액 반환 청구 및 위약금(단말기 잔여 할부금 + 잔여 서비스 이용료의 10%)이 발생합니다.</div>
+        <div style="color: #334155;">
+          <div style="margin-bottom: 3px;">1. 기존 사용 중인 카드사 VAN사 수수료 방식 그대로 적용 (별도 PG 수수료 없음)</div>
+          <div style="margin-bottom: 3px;">2. 안정적인 주문을 위한 하이오더 전용 인터넷 공유기(Wi-Fi) 무료 설치</div>
+          <div style="margin-bottom: 3px;">3. 초기 계약금 · 선납금 일체 없음 / 캐피탈 · 렌탈 금융 계약 아님 (KT 본사 직접 계약)</div>
+          <div style="margin-bottom: 3px;">4. 연중무휴 매일 09:00 ~ 새벽 02:00 전담 고객센터 및 원격·방문 A/S 지원</div>
+          <div>5. 3년 약정 기간 종료 후 단말기 할부금 종료로 월 이용료 15,000원(VAT별도)으로 인하</div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <table style="width: 100%; border-collapse: collapse; margin-top: 18px; padding-top: 14px; border-top: 1px solid #E2E8F0; font-size: 12px; color: #64748B;">
+        <tr>
+          <td style="padding-top: 12px; font-weight: 700; color: #1E232A;">KT세일즈 · KT 하이오더2 공식 파트너 견적 시스템</td>
+          <td style="padding-top: 12px; text-align: right;">상담 및 개통 문의: <strong id="q-footer-contact" style="color: #E60012; font-weight: 800;">010-5566-3327</strong></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: MANAGER MANAGEMENT MODAL (ADD / DELETE MANAGERS)               -->
+  <!-- ===================================================================== -->
+  <div id="manager-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs hidden flex items-center justify-center p-3">
+    <div class="bg-white w-full max-w-[440px] max-h-[88vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+      <div class="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4 text-kt-red"></i>
+          <h3 class="font-bold text-sm text-kt-charcoal">영업 담당자 목록 관리</h3>
+        </div>
+        <button type="button" onclick="closeManagerModal()" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Add New Manager Form -->
+      <div class="p-4 bg-slate-50 border-b border-slate-200 space-y-2.5">
+        <div class="text-xs font-bold text-slate-700">새 담당자 추가</div>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="new-mgr-name" placeholder="성함/직급 (예: 홍길동 팀장)"
+            class="px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-kt-red font-semibold" />
+          <input type="tel" id="new-mgr-phone" placeholder="연락처 (010-0000-0000)" oninput="formatPhone(this)"
+            class="px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-kt-red font-semibold" />
+        </div>
+        <button type="button" onclick="addNewManager()"
+          class="w-full py-2.5 bg-kt-red hover:bg-kt-darkRed text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+          <span>담당자 목록에 등록</span>
+        </button>
+      </div>
+
+      <!-- Manager List -->
+      <div id="manager-list-container" class="flex-1 overflow-y-auto p-4 space-y-2">
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-[60] bg-kt-charcoal/95 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-200 flex items-center gap-2 whitespace-nowrap">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toast-msg">알림 메시지</span>
+  </div>
+
+  <script>
+    // =========================================================================
+    // CONSTANTS & DEFAULT PRESETS
+    // =========================================================================
+    const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxpj-iiT-kt4T26LKoTJU-B8SWSmTUAIU-JZthnhAkLGFR9b_n44CgsjbM902xOlElx7w/exec';
+
+    const MENU_PRICES_BY_TYPE = {
+      '후불형': 20000,
+      '선불형(NICE VAN)': 23000,
+      '선불형(기타 VAN)': 22000
+    };
+
+    const NOTICE_PRICES = {
+      10: 20000,
+      15: 22000
+    };
+
+    const AD_DISCOUNT_UNIT = 556;
+    const EURATCHACHA_SUPPLY_DISCOUNT = 5000;
+    const EURATCHACHA_VAT_DISCOUNT = 500;
+    const EURATCHACHA_TOTAL_DISCOUNT = 5500;
+
+    const DEFAULT_MANAGERS = [
+      { id: 'mgr_1', name: '임훈', phone: '010-5566-3327' },
+      { id: 'mgr_2', name: '임정환', phone: '010-9236-7453' },
+      { id: 'mgr_3', name: '맹윤희', phone: '010-7473-5760' },
+      { id: 'mgr_4', name: '최서영', phone: '010-3993-2029' }
+    ];
+
+    const DEFAULT_BENEFITS = [
+      { id: 'b1', text: '하이오더 설치비 전액 무료 지원', active: true },
+      { id: 'b2', text: '하이오더 전용 와이파이(공유기) 무료 설치', active: true },
+      { id: 'b3', text: '대기화면 홍보·광고 이미지 무료 제작', active: true },
+      { id: 'b4', text: '네이버 블로그·인스타 릴스 체험단 20팀 제공', active: true }
+    ];
+
+    // =========================================================================
+    // APPLICATION STATE
+    // =========================================================================
+    let state = {
+      paymentType: '후불형',
+      storeName: '장생관',
+      customerPhone: '',
+      quoteDate: '',
+      selectedManagerId: 'mgr_1',
+      managerName: '임훈',
+      managerPhone: '010-5566-3327',
+      menuQty: 8,
+      noticeQty: 1,
+      noticeSize: 10,
+      adDiscount: true,
+      euratchacha: false,
+      cardDiscountAmount: 0,
+      extraDiscountMode: 0,
+      customDiscountVal: 0,
+      benefits: JSON.parse(JSON.stringify(DEFAULT_BENEFITS))
+    };
+
+    let managersList = [];
+    let currentGeneratedDataUrl = '';
+    let currentGeneratedBlob = null;
+
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const formattedToday = `${yyyy}-${mm}-${dd}`;
+      state.quoteDate = formattedToday;
+      document.getElementById('input-quote-date').value = formattedToday;
+
+      const activeWebhook = getActiveWebhookUrl();
+      document.getElementById('input-webhook-url').value = activeWebhook;
+      updateDriveStatusBadge();
+
+      loadManagers();
+      renderBenefits();
+      updateCalculation();
+      updateHistoryBadge();
+      switchView('form');
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+
+    function getActiveWebhookUrl() {
+      const saved = (localStorage.getItem('kt_hiorder_webhook') || '').trim();
+      return saved || DEFAULT_WEBHOOK_URL;
+    }
+
+    function updateDriveStatusBadge() {
+      const badge = document.getElementById('drive-status-badge');
+      if (!badge) return;
+      const url = getActiveWebhookUrl();
+      if (url) {
+        badge.textContent = '구글 드라이브 실시간 연동됨';
+        badge.className = 'text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full';
+      } else {
+        badge.textContent = '로컬 저장 모드';
+        badge.className = 'text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full';
+      }
+    }
+
+    // =========================================================================
+    // SINGLE-SCREEN NAVIGATION ('form' | 'result' | 'history')
+    // =========================================================================
+    function switchView(viewName) {
+      const viewForm = document.getElementById('view-form');
+      const viewResult = document.getElementById('view-result');
+      const viewHistory = document.getElementById('view-history');
+
+      const tabForm = document.getElementById('tab-btn-form');
+      const tabHistory = document.getElementById('tab-btn-history');
+
+      viewForm.classList.add('hidden');
+      viewResult.classList.add('hidden');
+      viewHistory.classList.add('hidden');
+
+      tabForm.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-kt-charcoal transition';
+      tabHistory.className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-kt-charcoal transition flex items-center gap-1';
+
+      if (viewName === 'form') {
+        viewForm.classList.remove('hidden');
+        tabForm.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-kt-charcoal shadow-2xs transition';
+      } else if (viewName === 'result') {
+        viewResult.classList.remove('hidden');
+        tabForm.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-kt-charcoal shadow-2xs transition';
+      } else if (viewName === 'history') {
+        viewHistory.classList.remove('hidden');
+        tabHistory.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-kt-charcoal shadow-2xs transition flex items-center gap-1';
+        renderHistoryList();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    // =========================================================================
+    // MANAGER DROPDOWN & MANAGEMENT
+    // =========================================================================
+    function loadManagers() {
+      try {
+        const saved = localStorage.getItem('kt_hiorder_managers_v2');
+        managersList = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_MANAGERS));
+        if (!Array.isArray(managersList) || managersList.length === 0) {
+          managersList = JSON.parse(JSON.stringify(DEFAULT_MANAGERS));
+        }
+      } catch (e) {
+        managersList = JSON.parse(JSON.stringify(DEFAULT_MANAGERS));
+      }
+      renderManagerDropdown();
+    }
+
+    function saveManagersToStorage() {
+      localStorage.setItem('kt_hiorder_managers_v2', JSON.stringify(managersList));
+    }
+
+    function renderManagerDropdown() {
+      const select = document.getElementById('select-manager');
+      select.innerHTML = '';
+
+      managersList.forEach(mgr => {
+        const opt = document.createElement('option');
+        opt.value = mgr.id;
+        opt.textContent = mgr.name;
+        select.appendChild(opt);
+      });
+
+      const customOpt = document.createElement('option');
+      customOpt.value = 'custom';
+      customOpt.textContent = '직접 입력 (기타)';
+      select.appendChild(customOpt);
+
+      const exists = managersList.find(m => m.id === state.selectedManagerId);
+      if (exists) {
+        select.value = exists.id;
+        state.managerName = exists.name;
+        state.managerPhone = exists.phone;
+        document.getElementById('input-manager-phone').value = exists.phone;
+      } else if (managersList.length > 0) {
+        select.value = managersList[0].id;
+        state.selectedManagerId = managersList[0].id;
+        state.managerName = managersList[0].name;
+        state.managerPhone = managersList[0].phone;
+        document.getElementById('input-manager-phone').value = managersList[0].phone;
+      }
+    }
+
+    function onManagerSelect() {
+      const select = document.getElementById('select-manager');
+      const val = select.value;
+      state.selectedManagerId = val;
+
+      if (val === 'custom') {
+        state.managerName = 'KT세일즈 전담팀';
+        document.getElementById('input-manager-phone').value = '';
+        document.getElementById('input-manager-phone').focus();
+      } else {
+        const found = managersList.find(m => m.id === val);
+        if (found) {
+          state.managerName = found.name;
+          state.managerPhone = found.phone;
+          document.getElementById('input-manager-phone').value = found.phone;
+        }
+      }
+      updateCalculation();
+    }
+
+    function openManagerModal() {
+      document.getElementById('manager-modal').classList.remove('hidden');
+      renderManagerModalList();
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function closeManagerModal() {
+      document.getElementById('manager-modal').classList.add('hidden');
+    }
+
+    function renderManagerModalList() {
+      const container = document.getElementById('manager-list-container');
+      container.innerHTML = '';
+
+      managersList.forEach(mgr => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl';
+        item.innerHTML = `
+          <div>
+            <div class="text-xs font-bold text-kt-charcoal">${escapeHtml(mgr.name)}</div>
+            <div class="text-[11px] font-semibold text-slate-500 mt-0.5">${escapeHtml(mgr.phone)}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="selectManagerFromModal('${mgr.id}')" class="px-2.5 py-1.5 text-[11px] font-bold bg-red-50 text-kt-red rounded-lg hover:bg-red-100">선택</button>
+            ${managersList.length > 1 ? `<button type="button" onclick="deleteManager('${mgr.id}')" class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function addNewManager() {
+      const nameInput = document.getElementById('new-mgr-name');
+      const phoneInput = document.getElementById('new-mgr-phone');
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+
+      if (!name || !phone) {
+        showToast('담당자 성함과 연락처를 모두 입력해 주세요.');
+        return;
+      }
+
+      const newMgr = { id: 'mgr_' + Date.now(), name, phone };
+      managersList.push(newMgr);
+      saveManagersToStorage();
+      state.selectedManagerId = newMgr.id;
+      renderManagerDropdown();
+      renderManagerModalList();
+      updateCalculation();
+
+      nameInput.value = '';
+      phoneInput.value = '';
+      showToast(`${name} 담당자가 등록되었습니다.`);
+    }
+
+    function selectManagerFromModal(id) {
+      state.selectedManagerId = id;
+      renderManagerDropdown();
+      updateCalculation();
+      closeManagerModal();
+      showToast('선택한 담당자 정보로 자동 입력되었습니다.');
+    }
+
+    function deleteManager(id) {
+      managersList = managersList.filter(m => m.id !== id);
+      saveManagersToStorage();
+      if (state.selectedManagerId === id && managersList.length > 0) {
+        state.selectedManagerId = managersList[0].id;
+      }
+      renderManagerDropdown();
+      renderManagerModalList();
+      updateCalculation();
+      showToast('담당자가 목록에서 삭제되었습니다.');
+    }
+
+    // =========================================================================
+    // INPUT HANDLERS & PRICING ENGINE
+    // =========================================================================
+    function formatPhone(input) {
+      let nums = input.value.replace(/[^0-9]/g, '');
+      if (nums.length <= 3) {
+        input.value = nums;
+      } else if (nums.length <= 7) {
+        input.value = nums.slice(0, 3) + '-' + nums.slice(3);
+      } else if (nums.length <= 10) {
+        input.value = nums.slice(0, 3) + '-' + nums.slice(3, 6) + '-' + nums.slice(6);
+      } else {
+        input.value = nums.slice(0, 3) + '-' + nums.slice(3, 7) + '-' + nums.slice(7, 11);
+      }
+    }
+
+    function setPaymentType(type) {
+      state.paymentType = type;
+
+      const btnPostpaid = document.getElementById('btn-type-postpaid');
+      const btnPrepaidNice = document.getElementById('btn-type-prepaid-nice');
+      const btnPrepaidEtc = document.getElementById('btn-type-prepaid-etc');
+
+      const activeClass = 'py-2.5 px-2 rounded-xl text-xs font-bold border-2 border-kt-red bg-red-50/60 text-kt-red transition flex flex-col items-center justify-center gap-0.5 text-center';
+      const inactiveClass = 'py-2.5 px-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition flex flex-col items-center justify-center gap-0.5 text-center';
+
+      btnPostpaid.className = type === '후불형' ? activeClass : inactiveClass;
+      btnPrepaidNice.className = type === '선불형(NICE VAN)' ? activeClass : inactiveClass;
+      btnPrepaidEtc.className = type === '선불형(기타 VAN)' ? activeClass : inactiveClass;
+
+      const unitPrice = MENU_PRICES_BY_TYPE[type] || 20000;
+      document.getElementById('menu-type-badge').textContent = type;
+      document.getElementById('menu-unit-label').textContent = `월 ${formatNumber(unitPrice)}원`;
+
+      updateCalculation();
+    }
+
+    function setNoticeSize(size) {
+      state.noticeSize = size;
+      const btn10 = document.getElementById('btn-notice-10');
+      const btn15 = document.getElementById('btn-notice-15');
+      const badge = document.getElementById('notice-size-badge');
+      const label = document.getElementById('notice-unit-label');
+
+      const activeBtnClass = 'py-2 px-3 rounded-xl text-xs font-bold border-2 border-kt-red bg-white text-kt-red transition flex items-center justify-between';
+      const inactiveBtnClass = 'py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 transition flex items-center justify-between';
+
+      if (size === 10) {
+        btn10.className = activeBtnClass;
+        btn15.className = inactiveBtnClass;
+        badge.textContent = '10인치 선택';
+        label.textContent = '월 20,000원';
+      } else {
+        btn15.className = activeBtnClass;
+        btn10.className = inactiveBtnClass;
+        badge.textContent = '15인치 선택';
+        label.textContent = '월 22,000원';
+      }
+      updateCalculation();
+    }
+
+    function adjustQty(target, delta) {
+      if (target === 'menu') {
+        const next = Math.max(0, Math.min(50, state.menuQty + delta));
+        state.menuQty = next;
+        document.getElementById('qty-menu').value = next;
+      } else {
+        const next = Math.max(0, Math.min(10, state.noticeQty + delta));
+        state.noticeQty = next;
+        document.getElementById('qty-notice').value = next;
+      }
+      updateCalculation();
+    }
+
+    function setQty(target, val) {
+      const parsed = Math.max(0, parseInt(val, 10) || 0);
+      if (target === 'menu') {
+        state.menuQty = Math.min(50, parsed);
+        document.getElementById('qty-menu').value = state.menuQty;
+      } else {
+        state.noticeQty = Math.min(10, parsed);
+        document.getElementById('qty-notice').value = state.noticeQty;
+      }
+      updateCalculation();
+    }
+
+    function selectCardAmount(amount) {
+      state.cardDiscountAmount = amount;
+      document.querySelectorAll('.card-chip-btn').forEach(btn => {
+        const btnVal = parseInt(btn.getAttribute('data-card'), 10);
+        if (btnVal === amount) {
+          btn.className = 'card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border-2 border-blue-600 bg-blue-600 text-white transition';
+        } else {
+          btn.className = 'card-chip-btn py-2 px-1 rounded-lg text-[11px] font-bold border border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition';
+        }
+      });
+      updateCalculation();
+    }
+
+    function selectExtraDiscount(mode) {
+      state.extraDiscountMode = mode;
+      const customBox = document.getElementById('custom-discount-box');
+      if (mode === 'custom') {
+        customBox.classList.remove('hidden');
+      } else {
+        customBox.classList.add('hidden');
+      }
+
+      document.querySelectorAll('.extra-disc-btn').forEach(btn => {
+        const btnVal = btn.getAttribute('data-val');
+        if (String(btnVal) === String(mode)) {
+          btn.className = 'extra-disc-btn py-2 px-3 rounded-xl text-xs font-bold border-2 border-kt-red bg-red-50/60 text-kt-red transition text-left';
+        } else {
+          btn.className = 'extra-disc-btn py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 transition text-left';
+        }
+      });
+      updateCalculation();
+    }
+
+    function renderBenefits() {
+      const container = document.getElementById('benefits-list');
+      container.innerHTML = '';
+
+      state.benefits.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = `flex items-center justify-between p-2.5 rounded-xl border transition ${item.active ? 'bg-red-50/40 border-red-200' : 'bg-slate-50 border-slate-200 opacity-60'}`;
+        row.innerHTML = `
+          <label class="flex items-center gap-2.5 cursor-pointer flex-1 pr-2">
+            <input type="checkbox" ${item.active ? 'checked' : ''} onchange="toggleBenefit(${idx})"
+              class="w-4 h-4 accent-[#E60012] rounded cursor-pointer" />
+            <span class="text-xs font-bold ${item.active ? 'text-kt-charcoal' : 'text-slate-500 line-through'}">${escapeHtml(item.text)}</span>
+          </label>
+          ${idx >= 4 ? `<button type="button" onclick="removeBenefit(${idx})" class="text-slate-400 hover:text-red-500 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : '<span class="text-[10px] font-bold text-kt-red bg-white px-2 py-0.5 rounded border border-red-100">무상</span>'}
+        `;
+        container.appendChild(row);
+      });
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function toggleBenefit(idx) {
+      state.benefits[idx].active = !state.benefits[idx].active;
+      renderBenefits();
+      updateCalculation();
+    }
+
+    function addCustomBenefit() {
+      const input = document.getElementById('input-new-benefit');
+      const val = input.value.trim();
+      if (!val) {
+        showToast('추가할 혜택 내용을 입력해 주세요.');
+        return;
+      }
+      state.benefits.push({ id: 'b_' + Date.now(), text: val, active: true });
+      input.value = '';
+      renderBenefits();
+      updateCalculation();
+      showToast('가입 혜택 항목이 추가되었습니다.');
+    }
+
+    function removeBenefit(idx) {
+      state.benefits.splice(idx, 1);
+      renderBenefits();
+      updateCalculation();
+    }
+
+    // Core Pricing Engine
+    function getCalculatedNumbers() {
+      state.storeName = document.getElementById('input-store-name').value.trim() || '고객';
+      state.customerPhone = document.getElementById('input-customer-phone').value.trim();
+      state.quoteDate = document.getElementById('input-quote-date').value;
+      state.managerPhone = document.getElementById('input-manager-phone').value.trim();
+      state.adDiscount = document.getElementById('chk-ad-discount').checked;
+      state.euratchacha = document.getElementById('chk-euratchacha').checked;
+
+      const menuUnitBase = MENU_PRICES_BY_TYPE[state.paymentType] || 20000;
+      const noticeUnitBase = NOTICE_PRICES[state.noticeSize] || 20000;
+
+      const adUnit = state.adDiscount ? AD_DISCOUNT_UNIT : 0;
+      let extraUnit = 0;
+      if (state.extraDiscountMode === 'custom') {
+        extraUnit = Math.max(0, parseInt(document.getElementById('input-custom-discount').value, 10) || 0);
+      } else {
+        extraUnit = Number(state.extraDiscountMode) || 0;
+      }
+
+      const menuPerUnitDiscount = adUnit + extraUnit;
+      const menuAppliedUnit = Math.max(0, menuUnitBase - menuPerUnitDiscount);
+
+      const menuBaseTotal = menuUnitBase * state.menuQty;
+      const noticeBaseTotal = noticeUnitBase * state.noticeQty;
+      const baseSupplyTotal = menuBaseTotal + noticeBaseTotal;
+
+      const adDiscountSupply = adUnit * state.menuQty;
+      const extraDiscountSupply = extraUnit * state.menuQty;
+      const euratchachaSupply = state.euratchacha ? EURATCHACHA_SUPPLY_DISCOUNT : 0;
+
+      const totalDiscountSupply = adDiscountSupply + extraDiscountSupply + euratchachaSupply;
+      const supplyPrice = Math.max(0, baseSupplyTotal - totalDiscountSupply);
+
+      const vatPrice = Math.floor(supplyPrice * 0.1);
+      const finalPrice = supplyPrice + vatPrice;
+
+      const baseVat = Math.floor(baseSupplyTotal * 0.1);
+      const baseFinalPrice = baseSupplyTotal + baseVat;
+      const totalDiscountVatIncluded = Math.max(0, baseFinalPrice - finalPrice);
+
+      const cardDiscountAmount = state.cardDiscountAmount || 0;
+      const cardFinalPrice = Math.max(0, finalPrice - cardDiscountAmount);
+
+      return {
+        menuUnitBase,
+        noticeUnitBase,
+        adUnit,
+        extraUnit,
+        menuPerUnitDiscount,
+        menuAppliedUnit,
+        menuBaseTotal,
+        noticeBaseTotal,
+        baseSupplyTotal,
+        adDiscountSupply,
+        extraDiscountSupply,
+        euratchachaSupply,
+        totalDiscountSupply,
+        supplyPrice,
+        vatPrice,
+        finalPrice,
+        totalDiscountVatIncluded,
+        cardDiscountAmount,
+        cardFinalPrice
+      };
+    }
+
+    function updateCalculation() {
+      const calc = getCalculatedNumbers();
+
+      document.getElementById('footer-summary-spec').textContent =
+        `${state.paymentType} · 메뉴판 ${state.menuQty}대 · 알림판(${state.noticeSize}인치) ${state.noticeQty}대`;
+
+      const discountTextParts = [];
+      if (calc.totalDiscountVatIncluded > 0) {
+        discountTextParts.push(`월 ${formatNumber(calc.totalDiscountVatIncluded)}원 할인`);
+      }
+      if (calc.cardDiscountAmount > 0) {
+        discountTextParts.push(`제휴카드시 체감 ${formatNumber(calc.cardFinalPrice)}원`);
+      }
+
+      document.getElementById('footer-discount-badge').textContent =
+        discountTextParts.length > 0 ? discountTextParts.join(' · ') : '기본 표준 단가 적용';
+
+      document.getElementById('footer-total-price').textContent = formatNumber(calc.finalPrice);
+
+      syncCaptureTemplateDOM(calc);
+    }
+
+    function syncCaptureTemplateDOM(calc) {
+      document.getElementById('q-payment-type').textContent = `(${state.paymentType})`;
+      document.getElementById('q-date').textContent = state.quoteDate || '-';
+      document.getElementById('q-store-name').textContent = `${state.storeName} 귀하`;
+      document.getElementById('q-customer-phone').textContent = state.customerPhone || '미기재';
+
+      const mgrDisplay = state.managerPhone
+        ? `${state.managerName} (${state.managerPhone})`
+        : state.managerName;
+      document.getElementById('q-manager-info').textContent = mgrDisplay;
+      document.getElementById('q-footer-contact').textContent = state.managerPhone || '1588-0114';
+
+      const tbody = document.getElementById('q-items-tbody');
+      tbody.innerHTML = '';
+
+      if (state.menuQty > 0) {
+        const menuRowSupply = calc.menuAppliedUnit * state.menuQty;
+        const trMenu = document.createElement('tr');
+        trMenu.style.borderBottom = '1px solid #E2E8F0';
+        trMenu.innerHTML = `
+          <td style="padding: 13px 12px;">
+            <div style="font-weight: 800; color: #1E232A; font-size: 14px;">하이오더2 메뉴판 태블릿</div>
+            <div style="font-size: 11.5px; color: #64748B; margin-top: 2px;">테이블 주문 전용 단말기 · ${escapeHtml(state.paymentType)} (3년 약정)</div>
+          </td>
+          <td style="padding: 13px 8px; text-align: right; color: #475569; font-weight: 600;">${formatNumber(calc.menuUnitBase)}</td>
+          <td style="padding: 13px 8px; text-align: right; color: #E60012; font-weight: 700;">${calc.menuPerUnitDiscount > 0 ? '-' + formatNumber(calc.menuPerUnitDiscount) : '0'}</td>
+          <td style="padding: 13px 8px; text-align: right; font-weight: 800; color: #1E232A;">${formatNumber(calc.menuAppliedUnit)}</td>
+          <td style="padding: 13px 8px; text-align: center; font-weight: 800;">${state.menuQty}대</td>
+          <td style="padding: 13px 12px; text-align: right; font-weight: 900; color: #1E232A; font-size: 14px;">${formatNumber(menuRowSupply)}원</td>
+        `;
+        tbody.appendChild(trMenu);
+      }
+
+      if (state.noticeQty > 0) {
+        const trNotice = document.createElement('tr');
+        trNotice.style.borderBottom = '1px solid #E2E8F0';
+        trNotice.innerHTML = `
+          <td style="padding: 13px 12px;">
+            <div style="font-weight: 800; color: #1E232A; font-size: 14px;">하이오더2 알림판 태블릿 (${state.noticeSize}인치)</div>
+            <div style="font-size: 11.5px; color: #64748B; margin-top: 2px;">직원 호출/주문 확인용 ${state.noticeSize}인치 대형 단말기</div>
+          </td>
+          <td style="padding: 13px 8px; text-align: right; color: #475569; font-weight: 600;">${formatNumber(calc.noticeUnitBase)}</td>
+          <td style="padding: 13px 8px; text-align: right; color: #94A3B8; font-weight: 600;">0</td>
+          <td style="padding: 13px 8px; text-align: right; font-weight: 800; color: #1E232A;">${formatNumber(calc.noticeUnitBase)}</td>
+          <td style="padding: 13px 8px; text-align: center; font-weight: 800;">${state.noticeQty}대</td>
+          <td style="padding: 13px 12px; text-align: right; font-weight: 900; color: #1E232A; font-size: 14px;">${formatNumber(calc.noticeBaseTotal)}원</td>
+        `;
+        tbody.appendChild(trNotice);
+      }
+
+      if (state.adDiscount && state.menuQty > 0) {
+        const trAd = document.createElement('tr');
+        trAd.style.backgroundColor = '#F8FAFC';
+        trAd.style.borderBottom = '1px solid #E2E8F0';
+        trAd.innerHTML = `
+          <td colspan="4" style="padding: 9px 12px; font-size: 12.5px; color: #475569; font-weight: 600;">
+            └ [할인내역] 대기화면 광고 송출 할인 (메뉴판 대당 월 -556원)
+          </td>
+          <td style="padding: 9px 8px; text-align: center; font-size: 12.5px; color: #059669; font-weight: 700;">${state.menuQty}대</td>
+          <td style="padding: 9px 12px; text-align: right; font-size: 12.5px; color: #059669; font-weight: 800;">-${formatNumber(calc.adDiscountSupply)}원</td>
+        `;
+        tbody.appendChild(trAd);
+      }
+
+      if (state.euratchacha) {
+        const trEura = document.createElement('tr');
+        trEura.style.backgroundColor = '#FFFBEB';
+        trEura.style.borderBottom = '1px solid #E2E8F0';
+        trEura.innerHTML = `
+          <td colspan="4" style="padding: 9px 12px; font-size: 12.5px; color: #92400E; font-weight: 700;">
+            └ [패키지할인] 으랏차차패키지 결합 할인 (VAT 포함 월 -5,500원 정액 차감)
+          </td>
+          <td style="padding: 9px 8px; text-align: center; font-size: 12.5px; color: #D97706; font-weight: 700;">1식</td>
+          <td style="padding: 9px 12px; text-align: right; font-size: 12.5px; color: #D97706; font-weight: 800;">-${formatNumber(EURATCHACHA_SUPPLY_DISCOUNT)}원</td>
+        `;
+        tbody.appendChild(trEura);
+      }
+
+      if (calc.extraUnit > 0 && state.menuQty > 0) {
+        const trEx = document.createElement('tr');
+        trEx.style.backgroundColor = '#F8FAFC';
+        trEx.style.borderBottom = '1px solid #E2E8F0';
+        trEx.innerHTML = `
+          <td colspan="4" style="padding: 9px 12px; font-size: 12.5px; color: #475569; font-weight: 600;">
+            └ [할인내역] 프랜차이즈 / 특별 제휴 할인 (대당 월 -${formatNumber(calc.extraUnit)}원)
+          </td>
+          <td style="padding: 9px 8px; text-align: center; font-size: 12.5px; color: #059669; font-weight: 700;">${state.menuQty}대</td>
+          <td style="padding: 9px 12px; text-align: right; font-size: 12.5px; color: #059669; font-weight: 800;">-${formatNumber(calc.extraDiscountSupply)}원</td>
+        `;
+        tbody.appendChild(trEx);
+      }
+
+      document.getElementById('q-supply-total').textContent = formatNumber(calc.supplyPrice) + '원';
+      document.getElementById('q-discount-total').textContent =
+        calc.totalDiscountVatIncluded > 0 ? '-' + formatNumber(calc.totalDiscountVatIncluded) + '원' : '0원';
+      document.getElementById('q-vat-total').textContent = formatNumber(calc.vatPrice) + '원';
+      document.getElementById('q-final-total').textContent = formatNumber(calc.finalPrice) + '원';
+
+      const cardBox = document.getElementById('q-card-highlight-box');
+      if (calc.cardDiscountAmount > 0) {
+        cardBox.style.display = 'block';
+        document.getElementById('q-card-subtext').textContent =
+          `제휴카드 월 -${formatNumber(calc.cardDiscountAmount)}원 청구할인 반영 기준 (전월 실적 충족 시)`;
+        document.getElementById('q-card-final-total').textContent = formatNumber(calc.cardFinalPrice) + '원';
+      } else {
+        cardBox.style.display = 'none';
+      }
+
+      const benefitsTable = document.getElementById('q-benefits-table');
+      benefitsTable.innerHTML = '';
+      const activeBenefits = state.benefits.filter(b => b.active);
+
+      if (activeBenefits.length === 0) {
+        benefitsTable.innerHTML = '<tr><td style="padding: 4px 0; color: #64748B;">• 기본 표준 설치 및 A/S 보증 적용</td></tr>';
+      } else {
+        for (let i = 0; i < activeBenefits.length; i += 2) {
+          const b1 = activeBenefits[i];
+          const b2 = activeBenefits[i + 1];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="width: 50%; padding: 4px 8px 4px 0; vertical-align: top;">
+              <span style="color: #E60012; font-weight: 900; margin-right: 4px;">✔</span>${escapeHtml(b1.text)}
+            </td>
+            <td style="width: 50%; padding: 4px 0 4px 8px; vertical-align: top;">
+              ${b2 ? `<span style="color: #E60012; font-weight: 900; margin-right: 4px;">✔</span>${escapeHtml(b2.text)}` : ''}
+            </td>
+          `;
+          benefitsTable.appendChild(tr);
+        }
+      }
+    }
+
+    // =========================================================================
+    // VERTICAL IMAGE GENERATION & TRANSITION TO RESULT VIEW
+    // =========================================================================
+    async function generateQuoteAndShowResult() {
+      const storeInput = document.getElementById('input-store-name').value.trim();
+      if (!storeInput) {
+        showToast('고객(매장)명을 입력해 주세요.');
+        document.getElementById('input-store-name').focus();
+        return;
+      }
+
+      if (state.menuQty === 0 && state.noticeQty === 0) {
+        showToast('메뉴판 또는 알림판 수량을 1대 이상 선택해 주세요.');
+        return;
+      }
+
+      updateCalculation();
+
+      switchView('result');
+      const loadingEl = document.getElementById('quote-loading');
+      const imgEl = document.getElementById('preview-img');
+      const actionPanel = document.getElementById('result-action-panel');
+
+      loadingEl.classList.remove('hidden');
+      imgEl.classList.add('hidden');
+      actionPanel.classList.add('hidden');
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        const targetEl = document.getElementById('capture-template');
+        const canvas = await html2canvas(targetEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          logging: false,
+          width: 720,
+          windowWidth: 720
+        });
+
+        currentGeneratedDataUrl = canvas.toDataURL('image/png', 1.0);
+        currentGeneratedBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+
+        imgEl.src = currentGeneratedDataUrl;
+        loadingEl.classList.add('hidden');
+        imgEl.classList.remove('hidden');
+        actionPanel.classList.remove('hidden');
+      } catch (err) {
+        console.error('Image generation failed:', err);
+        loadingEl.classList.add('hidden');
+        showToast('이미지 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    }
+
+    // =========================================================================
+    // 4 DEDICATED ACTIONS: 이미지 저장 / 드라이브 저장 / 카톡 공유 / 메시지 공유
+    // =========================================================================
+
+    // 1) 이미지 저장
+    function downloadQuoteImage() {
+      if (!currentGeneratedDataUrl) {
+        showToast('먼저 견적서 이미지를 생성해 주세요.');
+        return;
+      }
+      const safeName = state.storeName.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+      const fileName = `KT세일즈_하이오더2견적서_${safeName}_${state.quoteDate}.png`;
+
+      const link = document.createElement('a');
+      link.href = currentGeneratedDataUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('견적서 세로형 이미지(PNG)가 저장되었습니다!');
+    }
+
+    // 2) 드라이브 저장 (Google Sheets 데이터 + Google Drive PNG 이미지 실시간 자동 전송)
+    async function saveQuoteToDrive() {
+      const calc = getCalculatedNumbers();
+      const activeBenefits = state.benefits.filter(b => b.active).map(b => b.text).join(' / ');
+
+      const discountParts = [];
+      if (state.adDiscount && state.menuQty > 0) {
+        discountParts.push(`광고할인(-${formatNumber(calc.adDiscountSupply)}원)`);
+      }
+      if (state.euratchacha) {
+        discountParts.push('으랏차차패키지(-5,500원)');
+      }
+      if (calc.extraUnit > 0 && state.menuQty > 0) {
+        discountParts.push(`추가할인(-${formatNumber(calc.extraDiscountSupply)}원)`);
+      }
+      if (calc.cardDiscountAmount > 0) {
+        discountParts.push(`제휴카드(-${formatNumber(calc.cardDiscountAmount)}원)`);
+      }
+      const discountSummary = discountParts.length > 0 ? discountParts.join(', ') : '없음';
+
+      const record = {
+        id: 'Q_' + Date.now(),
+        createdAt: new Date().toLocaleString('ko-KR'),
+        quoteDate: state.quoteDate,
+        storeName: state.storeName,
+        customerPhone: state.customerPhone || '-',
+        paymentType: state.paymentType,
+        menuQty: state.menuQty,
+        noticeQty: state.noticeQty,
+        noticeSize: state.noticeSize,
+        adDiscount: state.adDiscount ? '적용' : '미적용',
+        euratchacha: state.euratchacha ? '적용(-5,500원)' : '미적용',
+        cardDiscount: calc.cardDiscountAmount > 0 ? `-${formatNumber(calc.cardDiscountAmount)}원` : '없음',
+        extraDiscountUnit: calc.extraUnit,
+        supplyPrice: calc.supplyPrice,
+        vatPrice: calc.vatPrice,
+        totalPrice: calc.finalPrice,
+        cardFinalPrice: calc.cardFinalPrice,
+        benefits: activeBenefits,
+        managerName: state.managerName || '-',
+        managerPhone: state.managerPhone || '-'
+      };
+
+      const list = getSavedQuotes();
+      list.unshift(record);
+      localStorage.setItem('kt_hiorder_quotes_v1', JSON.stringify(list));
+      updateHistoryBadge();
+
+      const webhookUrl = getActiveWebhookUrl();
+      const driveBtn = document.getElementById('btn-save-drive');
+      const driveBtnText = document.getElementById('btn-save-drive-text');
+
+      if (webhookUrl) {
+        const appsScriptPayload = {
+          quoteDate: state.quoteDate,
+          customerName: state.storeName,
+          customerPhone: state.customerPhone || '미기재',
+          managerName: state.managerName || '-',
+          managerPhone: state.managerPhone || '-',
+          payTypeLabel: state.paymentType,
+          menuQty: state.menuQty,
+          noticeInch: `${state.noticeSize}인치`,
+          noticeQty: state.noticeQty,
+          discountSummary: discountSummary,
+          supplyPrice: calc.supplyPrice,
+          vatPrice: calc.vatPrice,
+          totalPrice: calc.finalPrice,
+          cardAppliedPrice: calc.cardDiscountAmount > 0 ? `${formatNumber(calc.cardFinalPrice)}원` : '미적용',
+          imageBase64: currentGeneratedDataUrl || ''
+        };
+
+        try {
+          if (driveBtn) driveBtn.disabled = true;
+          if (driveBtnText) driveBtnText.textContent = '드라이브 전송 중...';
+
+          await fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(appsScriptPayload)
+          });
+
+          showToast('구글 드라이브 및 시트에 견적서와 이미지가 저장되었습니다!');
+          return;
+        } catch (e) {
+          console.error('Google Drive Webhook error:', e);
+          downloadSingleRecordCSV(record);
+          showToast('전송 중 네트워크 오류가 발생하여 CSV 파일로 대체 저장되었습니다.');
+          return;
+        } finally {
+          if (driveBtn) driveBtn.disabled = false;
+          if (driveBtnText) driveBtnText.textContent = '드라이브 저장';
+        }
+      }
+
+      downloadSingleRecordCSV(record);
+      showToast('보관함에 저장되었습니다! 드라이브 업로드용 CSV 파일도 함께 저장됩니다.');
+    }
+
+    // 견적 요약 텍스트 생성
+    function buildShareSummaryText() {
+      const calc = getCalculatedNumbers();
+      const lines = [
+        `[KT세일즈] KT 하이오더2 (${state.paymentType}) 공식 견적 안내`,
+        `■ 매장명: ${state.storeName} 귀하`,
+        `■ 견적일자: ${state.quoteDate}`,
+        `■ 구성: 메뉴판 ${state.menuQty}대 / 알림판(${state.noticeSize}인치) ${state.noticeQty}대 (3년 약정)`,
+        `■ 최종 월 납부액(VAT포함): ${formatNumber(calc.finalPrice)}원`
+      ];
+
+      if (calc.cardDiscountAmount > 0) {
+        lines.push(`■ 제휴카드 적용 체감가: 월 ${formatNumber(calc.cardFinalPrice)}원 (-${formatNumber(calc.cardDiscountAmount)}원 할인 시)`);
+      }
+
+      lines.push(`■ 무상혜택: 설치비 무료 · 전용 Wi-Fi 설치 · 체험단 20팀 지원`);
+      lines.push(`■ 담당자: ${state.managerName}${state.managerPhone ? ' (' + state.managerPhone + ')' : ''}`);
+      return lines.join('\n');
+    }
+
+    // 3) 카톡 공유
+    async function shareToKakao() {
+      const shareText = buildShareSummaryText();
+      const safeName = state.storeName.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+      const fileName = `KT세일즈_하이오더2견적서_${safeName}.png`;
+
+      if (currentGeneratedBlob && navigator.canShare) {
+        const file = new File([currentGeneratedBlob], fileName, { type: 'image/png' });
+        const shareData = {
+          title: `[KT세일즈] ${state.storeName} 하이오더2 견적서`,
+          text: shareText,
+          files: [file]
+        };
+        if (navigator.canShare(shareData)) {
+          try {
+            await navigator.share(shareData);
+            showToast('공유 창에서 카카오톡을 선택해 전송하세요!');
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') return;
+          }
+        }
+      }
+
+      copyTextFallback(shareText);
+      downloadQuoteImage();
+      showToast('견적 내용이 복사되고 이미지가 저장되었습니다. 카카오톡에 붙여넣기 하세요!');
+    }
+
+    // 4) 메시지 공유
+    async function shareToSMS() {
+      const shareText = buildShareSummaryText();
+      const safeName = state.storeName.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+      const fileName = `KT세일즈_하이오더2견적서_${safeName}.png`;
+
+      if (currentGeneratedBlob && navigator.canShare) {
+        const file = new File([currentGeneratedBlob], fileName, { type: 'image/png' });
+        const shareData = {
+          title: `[KT세일즈] ${state.storeName} 하이오더2 견적서`,
+          text: shareText,
+          files: [file]
+        };
+        if (navigator.canShare(shareData)) {
+          try {
+            await navigator.share(shareData);
+            showToast('공유 창에서 메시지(문자) 앱을 선택해 발송하세요!');
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') return;
+          }
+        }
+      }
+
+      copyTextFallback(shareText);
+      downloadQuoteImage();
+      const cleanPhone = (state.customerPhone || '').replace(/[^0-9]/g, '');
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const separator = isIOS ? '&' : '?';
+      const smsUri = `sms:${cleanPhone}${separator}body=${encodeURIComponent(shareText)}`;
+
+      showToast('문자 메시지 앱을 실행합니다. 저장된 견적서 이미지를 함께 첨부하세요!');
+      setTimeout(() => {
+        window.location.href = smsUri;
+      }, 450);
+    }
+
+    function copyTextFallback(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    // =========================================================================
+    // LOCAL HISTORY & GOOGLE DRIVE CSV EXPORT
+    // =========================================================================
+    function getSavedQuotes() {
+      try {
+        return JSON.parse(localStorage.getItem('kt_hiorder_quotes_v1') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateHistoryBadge() {
+      const count = getSavedQuotes().length;
+      document.getElementById('history-badge').textContent = count;
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('history-list-container');
+      const list = getSavedQuotes();
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-10 text-center border border-slate-200">
+            <p class="text-sm font-bold text-slate-500">아직 저장된 견적 내역이 없습니다.</p>
+            <p class="text-xs text-slate-400 mt-1">견적서 생성 후 [드라이브 저장] 버튼을 누르면 기록됩니다.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      list.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-2.5';
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-extrabold text-kt-red bg-red-50 px-2 py-0.5 rounded">${escapeHtml(item.paymentType)}</span>
+                <span class="font-extrabold text-sm text-kt-charcoal">${escapeHtml(item.storeName)} 귀하</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">견적일: ${escapeHtml(item.quoteDate)} · 담당: ${escapeHtml(item.managerName)}</p>
+            </div>
+            <button type="button" onclick="deleteQuoteRecord(${idx})" class="text-slate-400 hover:text-red-500 p-1">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between text-xs">
+            <span class="text-slate-600 font-semibold">메뉴판 ${item.menuQty}대 / 알림판(${item.noticeSize || 10}인치) ${item.noticeQty}대</span>
+            <span class="font-black text-kt-red text-sm">월 ${formatNumber(item.totalPrice)}원</span>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="button" onclick="loadRecordIntoForm(${idx})" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition">
+              조건 불러오기
+            </button>
+            <button type="button" onclick="downloadRecordCSVByIndex(${idx})" class="flex-1 py-2 bg-kt-charcoal hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+              개별 CSV 받기
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function loadRecordIntoForm(idx) {
+      const list = getSavedQuotes();
+      const item = list[idx];
+      if (!item) return;
+
+      document.getElementById('input-store-name').value = item.storeName;
+      document.getElementById('input-customer-phone').value = item.customerPhone === '-' ? '' : item.customerPhone;
+      document.getElementById('input-quote-date').value = item.quoteDate;
+      document.getElementById('input-manager-phone').value = item.managerPhone === '-' ? '' : item.managerPhone;
+
+      setPaymentType(item.paymentType || '후불형');
+      setQty('menu', item.menuQty);
+      setQty('notice', item.noticeQty);
+      setNoticeSize(item.noticeSize || 10);
+
+      document.getElementById('chk-ad-discount').checked = (item.adDiscount === '적용');
+      document.getElementById('chk-euratchacha').checked = (item.euratchacha && item.euratchacha.includes('적용'));
+
+      if (item.extraDiscountUnit === 0 || item.extraDiscountUnit === 1000 || item.extraDiscountUnit === 2000) {
+        selectExtraDiscount(item.extraDiscountUnit);
+      } else if (item.extraDiscountUnit > 0) {
+        selectExtraDiscount('custom');
+        document.getElementById('input-custom-discount').value = item.extraDiscountUnit;
+      } else {
+        selectExtraDiscount(0);
+      }
+
+      updateCalculation();
+      switchView('form');
+      showToast('저장된 견적 조건을 불러왔습니다.');
+    }
+
+    function deleteQuoteRecord(idx) {
+      const list = getSavedQuotes();
+      list.splice(idx, 1);
+      localStorage.setItem('kt_hiorder_quotes_v1', JSON.stringify(list));
+      updateHistoryBadge();
+      renderHistoryList();
+      showToast('견적 기록이 삭제되었습니다.');
+    }
+
+    function toggleAppsScriptConfig() {
+      const box = document.getElementById('apps-script-box');
+      box.classList.toggle('hidden');
+    }
+
+    function saveWebhookUrl() {
+      const inputVal = document.getElementById('input-webhook-url').value.trim();
+      const finalUrl = inputVal || DEFAULT_WEBHOOK_URL;
+      document.getElementById('input-webhook-url').value = finalUrl;
+      localStorage.setItem('kt_hiorder_webhook', finalUrl);
+      updateDriveStatusBadge();
+      showToast('구글 드라이브 웹앱 연동 URL이 저장되었습니다.');
+    }
+
+    function openGoogleDriveUpload() {
+      window.open('https://drive.google.com/drive/my-drive', '_blank', 'noopener,noreferrer');
+    }
+
+    function downloadSingleRecordCSV(rec) {
+      const headers = ['저장일시', '견적일자', '결제방식', '고객(매장명)', '고객연락처', '메뉴판수량', '알림판규격', '알림판수량', '광고할인', '으랏차차할인', '제휴카드할인', '추가할인(대당)', '월공급가액', '부가세', '최종월납부액(VAT포함)', '제휴카드체감가', '가입혜택', '담당자', '담당자연락처'];
+      const row = [
+        rec.createdAt, rec.quoteDate, rec.paymentType, rec.storeName, rec.customerPhone,
+        rec.menuQty, `${rec.noticeSize || 10}인치`, rec.noticeQty, rec.adDiscount, rec.euratchacha || '미적용', rec.cardDiscount || '없음',
+        rec.extraDiscountUnit, rec.supplyPrice, rec.vatPrice, rec.totalPrice, rec.cardFinalPrice || rec.totalPrice, rec.benefits, rec.managerName, rec.managerPhone
+      ];
+      triggerCSVDownload([headers, row], `KT세일즈_하이오더견적_${rec.storeName}_${rec.quoteDate}.csv`);
+    }
+
+    function downloadRecordCSVByIndex(idx) {
+      const list = getSavedQuotes();
+      if (list[idx]) downloadSingleRecordCSV(list[idx]);
+    }
+
+    function exportAllHistoryCSV() {
+      const list = getSavedQuotes();
+      if (list.length === 0) {
+        showToast('내보낼 저장 내역이 없습니다.');
+        return;
+      }
+      const headers = ['저장일시', '견적일자', '결제방식', '고객(매장명)', '고객연락처', '메뉴판수량', '알림판규격', '알림판수량', '광고할인', '으랏차차할인', '제휴카드할인', '추가할인(대당)', '월공급가액', '부가세', '최종월납부액(VAT포함)', '제휴카드체감가', '가입혜택', '담당자', '담당자연락처'];
+      const rows = list.map(rec => [
+        rec.createdAt, rec.quoteDate, rec.paymentType, rec.storeName, rec.customerPhone,
+        rec.menuQty, `${rec.noticeSize || 10}인치`, rec.noticeQty, rec.adDiscount, rec.euratchacha || '미적용', rec.cardDiscount || '없음',
+        rec.extraDiscountUnit, rec.supplyPrice, rec.vatPrice, rec.totalPrice, rec.cardFinalPrice || rec.totalPrice, rec.benefits, rec.managerName, rec.managerPhone
+      ]);
+      triggerCSVDownload([headers, ...rows], `KT세일즈_하이오더_전체견적내역_${state.quoteDate}.csv`);
+      showToast('전체 견적 내역 CSV 파일이 다운로드되었습니다.');
+    }
+
+    function triggerCSVDownload(rowsArray, filename) {
+      const csvContent = '\uFEFF' + rowsArray.map(r =>
+        r.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',')
+      ).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // UTILITIES
+    // =========================================================================
+    function formatNumber(num) {
+      return Number(num || 0).toLocaleString('ko-KR');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2800);
+    }
+  </script>
+</body>
+</html>
