@@ -292,82 +292,6 @@
           </div>
         </section>
 
-        <!-- STEP 2: 단말기 수량 및 규격 선택 -->
-        <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full bg-kt-red text-white text-xs font-bold flex items-center justify-center">2</span>
-              <h2 class="font-bold text-[15px] text-kt-charcoal">단말기 수량 및 규격 선택</h2>
-            </div>
-            <span class="text-[11px] text-slate-400">VAT 별도 단가 기준</span>
-          </div>
-
-          <div class="space-y-3.5">
-            <!-- 1. 메뉴판 태블릿 -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-              <div class="flex items-start justify-between mb-2.5">
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-bold text-sm text-kt-charcoal">메뉴판 태블릿</span>
-                    <span id="menu-type-badge" class="text-[10px] font-bold bg-red-100 text-kt-red px-1.5 py-0.5 rounded">후불형</span>
-                  </div>
-                  <p class="text-xs text-slate-500 mt-0.5">기본 단가 <strong id="menu-unit-label" class="text-slate-800">월 20,000원</strong> / 대</p>
-                </div>
-                <!-- Stepper -->
-                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-2xs">
-                  <button type="button" onclick="adjustQty('menu', -1)" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 active:bg-slate-200 font-bold text-lg">−</button>
-                  <input type="number" id="qty-menu" value="8" min="0" max="50" onchange="setQty('menu', this.value)"
-                    class="w-11 text-center font-extrabold text-sm text-kt-charcoal focus:outline-none" />
-                  <button type="button" onclick="adjustQty('menu', 1)" class="w-9 h-9 flex items-center justify-center text-kt-red hover:bg-red-50 active:bg-red-100 font-bold text-lg">+</button>
-                </div>
-              </div>
-              <!-- Quick Preset Buttons -->
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[11px] text-slate-400 mr-1">빠른선택:</span>
-                <button type="button" onclick="setQty('menu', 5)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">5대</button>
-                <button type="button" onclick="setQty('menu', 8)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">8대</button>
-                <button type="button" onclick="setQty('menu', 10)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">10대</button>
-                <button type="button" onclick="setQty('menu', 15)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">15대</button>
-                <button type="button" onclick="setQty('menu', 20)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-200 rounded-lg hover:border-kt-red hover:text-kt-red transition">20대</button>
-              </div>
-            </div>
-
-            <!-- 2. 알림판 태블릿 (10인치 20,000원 vs 15인치 22,000원 선택) -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-bold text-sm text-kt-charcoal">알림판 태블릿</span>
-                    <span id="notice-size-badge" class="text-[10px] font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">10인치 선택</span>
-                  </div>
-                  <p class="text-xs text-slate-500 mt-0.5">기본 단가 <strong id="notice-unit-label" class="text-slate-800">월 20,000원</strong> / 대</p>
-                </div>
-                <!-- Stepper -->
-                <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-2xs">
-                  <button type="button" onclick="adjustQty('notice', -1)" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 active:bg-slate-200 font-bold text-lg">−</button>
-                  <input type="number" id="qty-notice" value="1" min="0" max="10" onchange="setQty('notice', this.value)"
-                    class="w-11 text-center font-extrabold text-sm text-kt-charcoal focus:outline-none" />
-                  <button type="button" onclick="adjustQty('notice', 1)" class="w-9 h-9 flex items-center justify-center text-kt-red hover:bg-red-50 active:bg-red-100 font-bold text-lg">+</button>
-                </div>
-              </div>
-
-              <!-- 10인치 vs 15인치 Segmented Selector -->
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" id="btn-notice-10" onclick="setNoticeSize(10)"
-                  class="py-2 px-3 rounded-xl text-xs font-bold border-2 border-kt-red bg-white text-kt-red transition flex items-center justify-between">
-                  <span>10인치 (기본)</span>
-                  <span>20,000원</span>
-                </button>
-                <button type="button" id="btn-notice-15" onclick="setNoticeSize(15)"
-                  class="py-2 px-3 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-                  <span>15인치 (대형)</span>
-                  <span>22,000원</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- STEP 3: 할인 프로모션 및 패키지 선택 -->
         <section class="bg-white rounded-2xl p-4 shadow-2xs border border-kt-border space-y-3.5">
           <div class="flex items-center justify-between">
@@ -650,11 +574,10 @@
                     <tr>
                       <td style="font-size: 24px; font-weight: 900; color: #1E232A; vertical-align: middle; line-height: 1;">KT세일즈</td>
                       <td style="vertical-align: middle; padding-left: 8px;">
-                        <table style="border-collapse: collapse; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 6px;">
-                          <tr>
-                            <td style="height: 24px; padding: 0 9px; font-size: 12px; font-weight: 800; color: #E60012; text-align: center; vertical-align: middle; line-height: 1; white-space: nowrap;">공식 인증 견적서</td>
-                          </tr>
-                        </table>
+                        <svg width="106" height="24" viewBox="0 0 106 24" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+                          <rect x="0.5" y="0.5" width="105" height="23" rx="6" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+                          <text x="53" y="12.5" fill="#E60012" font-family="Pretendard, sans-serif" font-size="12" font-weight="800" text-anchor="middle" dominant-baseline="central">공식 인증 견적서</text>
+                        </svg>
                       </td>
                     </tr>
                   </table>
@@ -789,11 +712,10 @@
                 <table style="border-collapse: collapse;">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <table style="border-collapse: collapse; background-color: #3B82F6; border-radius: 6px;">
-                        <tr>
-                          <td style="height: 22px; padding: 0 8px; font-size: 11px; font-weight: 800; color: #FFFFFF; text-align: center; vertical-align: middle; line-height: 1; white-space: nowrap;">제휴카드 혜택</td>
-                        </tr>
-                      </table>
+                      <svg width="82" height="22" viewBox="0 0 82 22" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+                        <rect x="0" y="0" width="82" height="22" rx="6" fill="#3B82F6"/>
+                        <text x="41" y="11.5" fill="#FFFFFF" font-family="Pretendard, sans-serif" font-size="11" font-weight="800" text-anchor="middle" dominant-baseline="central">제휴카드 혜택</text>
+                      </svg>
                     </td>
                     <td style="font-size: 14px; font-weight: 800; color: #DBEAFE; padding-left: 7px; vertical-align: middle; line-height: 1.2;">제휴카드 청구할인 적용 시 체감 월 납부액</td>
                   </tr>
@@ -814,11 +736,10 @@
           <tr>
             <td style="font-size: 15px; font-weight: 900; color: #E60012; vertical-align: middle;">★ 특별 가입 혜택 및 무상 지원 내역</td>
             <td style="text-align: right; vertical-align: middle;">
-              <table style="border-collapse: collapse; background-color: #E60012; border-radius: 8px; margin-left: auto;">
-                <tr>
-                  <td style="height: 26px; padding: 0 12px; font-size: 12px; font-weight: 800; color: #FFFFFF; text-align: center; vertical-align: middle; line-height: 1; white-space: nowrap;">전액 무상 지원</td>
-                </tr>
-              </table>
+              <svg width="96" height="26" viewBox="0 0 96 26" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;">
+                <rect x="0" y="0" width="96" height="26" rx="8" fill="#E60012"/>
+                <text x="48" y="13.5" fill="#FFFFFF" font-family="Pretendard, sans-serif" font-size="12" font-weight="800" text-anchor="middle" dominant-baseline="central">전액 무상 지원</text>
+              </svg>
             </td>
           </tr>
         </table>
